@@ -3,6 +3,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class CalorieCounting {
 
@@ -12,21 +15,24 @@ public class CalorieCounting {
     BufferedReader br = new BufferedReader(reader);
 
     int calories = 0;
-    int maxCalories = 0;
     String line;
 
+    List<Integer> calorieList = new ArrayList<>();
     while ((line = br.readLine()) != null) {
       if (line.trim().length() > 0) {
         calories += Integer.parseInt(line);
       } else {
+        calorieList.add(calories);
         // Empty line. Check if this number of calories is most.
-        if (calories > maxCalories) {
-          maxCalories = calories;
-        }
         calories = 0;
       }
     }
 
-    System.out.println(maxCalories);
+    Collections.sort(calorieList);
+    Collections.reverse(calorieList);
+
+    int sumOfTopThreeCalories = calorieList.get(0) + calorieList.get(1) + calorieList.get(2);
+
+    System.out.println(sumOfTopThreeCalories);
   }
 }
