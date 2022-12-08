@@ -23,7 +23,6 @@ public class CalorieCounting {
         calories += Integer.parseInt(line);
       } else {
         calorieList.add(calories);
-        // Empty line. Check if this number of calories is most.
         calories = 0;
       }
     }
