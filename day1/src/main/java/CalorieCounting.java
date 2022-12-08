@@ -11,6 +11,7 @@ public class CalorieCounting {
 
   public static void main(String[] args) throws IOException {
     InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("input.txt");
+    assert is != null;
     InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
     BufferedReader br = new BufferedReader(reader);
 
