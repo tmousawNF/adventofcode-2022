@@ -26,10 +26,12 @@ public class RockPaperScissors {
         }
 
         Character oppenentGuess = entries[0].charAt(0);
-        Character myGuess = entries[1].charAt(0);
+        Character resultChar = entries[1].charAt(0);
 
         HandShape opponentShape = HandShape.valueOf(oppenentGuess);
-        HandShape myShape = HandShape.valueOf(myGuess);
+        Result result = Result.valueOf(resultChar);
+        HandShape myShape = opponentShape.getCorrespondingShape(result);
+
         finalScore += myShape.value;
         finalScore += myShape.versus(opponentShape);
       }

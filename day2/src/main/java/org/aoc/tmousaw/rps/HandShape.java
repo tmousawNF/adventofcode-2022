@@ -1,28 +1,52 @@
 package org.aoc.tmousaw.rps;
 
-import java.util.List;
-
 public enum HandShape {
-  ROCK(1, List.of('A', 'X')),
-  PAPER(2, List.of('B', 'Y')),
-  SCISSORS(3, List.of('C', 'Z'));
+  ROCK(1, 'A', 3, 2),
+  PAPER(2, 'B', 1, 3),
+  SCISSORS(3, 'C', 2, 1);
 
   final int value;
-  final List<Character> characterEquivalents;
+  final Character characterEquivalent;
+  final int beatsValue;
+  final int losesToValue;
 
-  HandShape(int value, List<Character> characterEquivalents) {
+  HandShape(int value, Character characterEquivalent, int beatsValue, int losesToValue) {
     this.value = value;
-    this.characterEquivalents = characterEquivalents;
+    this.characterEquivalent = characterEquivalent;
+    this.beatsValue = beatsValue;
+    this.losesToValue = losesToValue;
   }
 
   public static HandShape valueOf(Character c) {
     for (HandShape handShape : HandShape.values()) {
-      if (handShape.characterEquivalents.contains(c)) {
+      if (handShape.characterEquivalent.equals(c)) {
         return handShape;
       }
     }
 
     throw new IllegalArgumentException("Could not find HandShape equivalent for " + c);
+  }
+
+  public static HandShape valueOf(int value) {
+    for (HandShape handShape : HandShape.values()) {
+      if (handShape.value == value) {
+        return handShape;
+      }
+    }
+
+    throw new IllegalArgumentException("Could not find HandShape equivalent for " + value);
+  }
+
+  public HandShape getCorrespondingShape(Result result) {
+    if (Result.DRAW.equals(result)) {
+      return this;
+    } else if (Result.LOSE.equals(result)) {
+      return valueOf(beatsValue);
+    } else if (Result.WIN.equals(result)) {
+      return valueOf(losesToValue);
+    }
+
+    throw new IllegalArgumentException("Unknown Result " + result);
   }
 
   public int versus(HandShape shape) {
