@@ -100,7 +100,7 @@ public class NoSpaceLeftOnDevice {
         }
       }
     };
-    traverseWithConsumer(device.getRoot(), directoriesAtMost100K);
+    traverse(device.getRoot(), directoriesAtMost100K);
     System.out.println("Sum of all directories at most 100K in size (Part 1):" + sumOfDirectoriesAtMost100K);
     freeSpace -= calculateDirectorySize(device.getRoot());
     Consumer<Tree<Inode>> smallestDirectoryToGet30MFreeSpace = inode -> {
@@ -113,7 +113,7 @@ public class NoSpaceLeftOnDevice {
         }
       }
     };
-    traverseWithConsumer(device.getRoot(), smallestDirectoryToGet30MFreeSpace);
+    traverse(device.getRoot(), smallestDirectoryToGet30MFreeSpace);
     System.out.println("Smallest directory to make at least 30M in free space (Part 2):" + sizeOfDirectoryToDelete);
   }
 
@@ -136,11 +136,11 @@ public class NoSpaceLeftOnDevice {
     return root;
   }
 
-  public static void traverseWithConsumer(Tree<Inode> inode, Consumer<Tree<Inode>> consumer) {
+  public static void traverse(Tree<Inode> inode, Consumer<Tree<Inode>> consumer) {
     consumer.accept(inode);
     if (inode != null) {
       for (Tree<Inode> child : inode.getChildren()) {
-        traverseWithConsumer(child, consumer);
+        traverse(child, consumer);
       }
     }
   }
