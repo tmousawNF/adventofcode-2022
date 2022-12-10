@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
+import java.util.function.Consumer;
 import org.aoc.tmousaw.fs.collections.Tree;
 
 public class NoSpaceLeftOnDevice {
@@ -89,10 +90,30 @@ public class NoSpaceLeftOnDevice {
       }
     }
 
-    getSumOfDirectoriesAtMost100K(device.getRoot());
+    Consumer<Tree<Inode>> directoriesAtMost100K = inode -> {
+      if (inode != null) {
+        if (inode.getData().isDirectory()) {
+          long dirSize = calculateDirectorySize(inode);
+          if (dirSize < 100000) {
+            sumOfDirectoriesAtMost100K += dirSize;
+          }
+        }
+      }
+    };
+    traverseWithConsumer(device.getRoot(), directoriesAtMost100K);
     System.out.println("Sum of all directories at most 100K in size (Part 1):" + sumOfDirectoriesAtMost100K);
     freeSpace -= calculateDirectorySize(device.getRoot());
-    getSmallestDirectoryToDelete(device.getRoot());
+    Consumer<Tree<Inode>> smallestDirectoryToGet30MFreeSpace = inode -> {
+      if (inode != null) {
+        if (inode.getData().isDirectory()) {
+          long dirSize = calculateDirectorySize(inode);
+          if (dirSize >= (30000000 - freeSpace) && dirSize < sizeOfDirectoryToDelete) {
+            sizeOfDirectoryToDelete = dirSize;
+          }
+        }
+      }
+    };
+    traverseWithConsumer(device.getRoot(), smallestDirectoryToGet30MFreeSpace);
     System.out.println("Smallest directory to make at least 30M in free space (Part 2):" + sizeOfDirectoryToDelete);
   }
 
@@ -115,32 +136,11 @@ public class NoSpaceLeftOnDevice {
     return root;
   }
 
-  public static void getSumOfDirectoriesAtMost100K(Tree<Inode> inode) {
+  public static void traverseWithConsumer(Tree<Inode> inode, Consumer<Tree<Inode>> consumer) {
+    consumer.accept(inode);
     if (inode != null) {
-      if (inode.getData().isDirectory()) {
-        long dirSize = calculateDirectorySize(inode);
-        if (dirSize < 100000) {
-          sumOfDirectoriesAtMost100K += dirSize;
-        }
-      }
-
       for (Tree<Inode> child : inode.getChildren()) {
-        getSumOfDirectoriesAtMost100K(child);
-      }
-    }
-  }
-
-  public static void getSmallestDirectoryToDelete(Tree<Inode> inode) {
-    if (inode != null) {
-      if (inode.getData().isDirectory()) {
-        long dirSize = calculateDirectorySize(inode);
-        if (dirSize >= (30000000 - freeSpace) && dirSize < sizeOfDirectoryToDelete) {
-          sizeOfDirectoryToDelete = dirSize;
-        }
-      }
-
-      for (Tree<Inode> child : inode.getChildren()) {
-        getSmallestDirectoryToDelete(child);
+        traverseWithConsumer(child, consumer);
       }
     }
   }
