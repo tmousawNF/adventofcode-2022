@@ -1,5 +1,7 @@
 package org.aoc.tmousaw.cave;
 
+import java.util.Objects;
+
 public class Point implements Comparable<Point> {
   private Integer x;
   private Integer y;
@@ -43,7 +45,7 @@ public class Point implements Comparable<Point> {
   }
 
   public boolean isAdjacent(Point p) {
-    return !this.equals(p) && Math.abs(x - p.x) <= 1 && Math.abs(y - p.y) <= 1;
+    return Math.abs(x - p.x) <= 1 && Math.abs(y - p.y) <= 1;
   }
 
   @Override
@@ -52,7 +54,7 @@ public class Point implements Comparable<Point> {
       return 0;
     }
 
-    if (this.x != point.x) {
+    if (!Objects.equals(this.x, point.x)) {
       return this.x.compareTo(point.x);
     }
 
