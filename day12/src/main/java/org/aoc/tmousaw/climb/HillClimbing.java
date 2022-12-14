@@ -1,6 +1,5 @@
 package org.aoc.tmousaw.climb;
 
-import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,10 +62,10 @@ public class HillClimbing {
       int height = grid.get(p);
       int pathLen = shortestPath.get(p);
 
-      Point up = new Point((int) (p.getX() - 1), (int) p.getY());
-      Point down = new Point((int) (p.getX() + 1), (int) p.getY());
-      Point left = new Point((int) p.getX(), (int) (p.getY() - 1));
-      Point right = new Point((int) p.getX(), (int) (p.getY() + 1));
+      Point up = new Point(p.getX() - 1, p.getY());
+      Point down = new Point(p.getX() + 1, p.getY());
+      Point left = new Point(p.getX(), p.getY() - 1);
+      Point right = new Point(p.getX(), p.getY() + 1);
 
       evaluatePoint(grid, shortestPath, queue, height, pathLen, up, exactStart);
       evaluatePoint(grid, shortestPath, queue, height, pathLen, down, exactStart);
