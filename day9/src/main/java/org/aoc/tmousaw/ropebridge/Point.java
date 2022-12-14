@@ -1,6 +1,8 @@
 package org.aoc.tmousaw.ropebridge;
 
-public class Point {
+import java.util.Objects;
+
+public class Point implements Comparable<Point> {
   private Integer x;
   private Integer y;
 
@@ -43,8 +45,22 @@ public class Point {
   }
 
   public boolean isAdjacent(Point p) {
-    return !this.equals(p) && Math.abs(x - p.x) <= 1 && Math.abs(y - p.y) <= 1;
+    return Math.abs(x - p.x) <= 1 && Math.abs(y - p.y) <= 1;
   }
+
+  @Override
+  public int compareTo(Point point) {
+    if (this.equals(point)) {
+      return 0;
+    }
+
+    if (!Objects.equals(this.x, point.x)) {
+      return this.x.compareTo(point.x);
+    }
+
+    return this.y.compareTo(point.y);
+  }
+
 
   @Override
   public boolean equals(Object obj) {
@@ -64,5 +80,10 @@ public class Point {
     result = prime * result + y.hashCode();
 
     return result;
+  }
+
+  @Override
+  public String toString() {
+    return "(" + x +", " + y +")";
   }
 }

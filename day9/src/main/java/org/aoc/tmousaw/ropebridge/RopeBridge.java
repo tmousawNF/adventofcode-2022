@@ -13,25 +13,27 @@ import java.util.Set;
 public class RopeBridge {
 
   public static void main(String[] args) throws IOException {
-    int numKnots = 2;
-    if (args.length > 0) {
-      numKnots = Integer.parseInt(args[0]);
-    }
+    simulate(2, "input.txt");
+    simulate(10, "input.txt");
+  }
 
-    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("input.txt");
+  public static void simulate(int numKnots, String fileName) throws IOException {
+    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
     assert is != null;
     InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
     BufferedReader br = new BufferedReader(reader);
 
     String line;
-    Set<GridPosition> positions = new HashSet<>();
-    List<GridPosition> knotPositions = new ArrayList<>();
+    Set<Point> positions = new HashSet<>();
+    List<Point> knotPositions = new ArrayList<>();
+    int leftmost = 0, rightmost = 0, upmost = 0, downmost = 0;
+
     for (int i = 0; i < numKnots; i++) {
-      knotPositions.add(new GridPosition());
+      knotPositions.add(new Point());
     }
-    GridPosition headPosition = knotPositions.get(0);
-    GridPosition tailPosition = knotPositions.get(knotPositions.size() - 1);
-    positions.add(new GridPosition(0, 0));
+    Point headPosition = knotPositions.get(0);
+    Point tailPosition = knotPositions.get(knotPositions.size() - 1);
+    positions.add(new Point(0, 0));
     while ((line = br.readLine()) != null) {
       if (line.trim().length() > 0) {
         String input = line.trim();
@@ -56,9 +58,9 @@ public class RopeBridge {
 
           for (int i = 1; i < knotPositions.size(); i++) {
             // Now determine if the next knot needs to move.
-            GridPosition followingKnotPosition = knotPositions.get(i - 1);
-            GridPosition knotPosition = knotPositions.get(i);
-            if (!knotPosition.isTouching(followingKnotPosition)) {
+            Point followingKnotPosition = knotPositions.get(i - 1);
+            Point knotPosition = knotPositions.get(i);
+            if (!knotPosition.isAdjacent(followingKnotPosition)) {
               // The first move is always in the direction that is more than one position away.
               if (Math.abs(followingKnotPosition.getX() - knotPosition.getX()) > 1) {
                 // Move right or left as appropriate.
@@ -77,7 +79,6 @@ public class RopeBridge {
                   }
                 }
 
-                assert followingKnotPosition.getY() == knotPosition.getY();
               } else {
                 // It is the y position that is more than 1 away.
                 if (followingKnotPosition.getY() > knotPosition.getY()) {
@@ -95,19 +96,44 @@ public class RopeBridge {
                   }
                 }
 
-                assert followingKnotPosition.getY() == knotPosition.getY();
               }
+              assert followingKnotPosition.getY() == knotPosition.getY();
             }
           }
 
           // At this point, the tail is where it should visit, so add it to the set.
-          positions.add(new GridPosition(tailPosition.getX(), tailPosition.getY()));
+          positions.add(new Point(tailPosition.getX(), tailPosition.getY()));
 
           iteration++;
+        }
+        // After all iterations, see if the leftmost, rightmost, upmost, or downmost values need to change.
+        if (headPosition.getX() < leftmost) {
+          leftmost = headPosition.getX();
+        } else if (headPosition.getX() > rightmost) {
+          rightmost = headPosition.getX();
+        } else if (headPosition.getY() < downmost) {
+          downmost = headPosition.getY();
+        } else if (headPosition.getY() > upmost) {
+          upmost = headPosition.getY();
         }
       }
     }
 
+    // printPositions(positions, leftmost, rightmost, upmost, downmost);
     System.out.println("Positions visited (numKnots=" + numKnots + "): " + positions.size());
+  }
+
+  private static void printPositions(Set<Point> positions, int leftmost, int rightmost, int upmost, int downmost) {
+    for (int y = upmost; y >= downmost; y--) {
+      for (int x = leftmost; x <= rightmost; x++) {
+        if (positions.contains(new Point(x, y))) {
+          System.out.print("#");
+        } else {
+            System.out.print(".");
+        }
+      }
+
+      System.out.println();
+    }
   }
 }

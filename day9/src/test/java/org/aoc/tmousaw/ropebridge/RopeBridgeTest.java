@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 public class RopeBridgeTest {
   @Test
   public void testSet() {
-    Set<GridPosition> positions = new HashSet<>();
-    positions.add(new GridPosition());
-    positions.add(new GridPosition());
+    Set<Point> positions = new HashSet<>();
+    positions.add(new Point());
+    positions.add(new Point());
 
     assertEquals(1, positions.size());
   }
