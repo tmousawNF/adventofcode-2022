@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 public class BeaconExclusionZone {
 
   public static void main(String[] args) throws IOException {
+    final long startTime = System.currentTimeMillis();
     InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("input.txt");
     assert is != null;
     InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
@@ -24,5 +25,9 @@ public class BeaconExclusionZone {
 
     System.out.println("Number of points with no beacon (Part 1): " + cave.countNoBeaconsAt(2000000));
     System.out.println("Tuning frequency (Part 2): " + cave.calculateTuningFrequency(0, 4000000));
+
+    final long endTime = System.currentTimeMillis();
+    System.out.println();
+    System.out.println("Total execution time: " + (endTime - startTime));
   }
 }
