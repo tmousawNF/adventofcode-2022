@@ -5,14 +5,18 @@ import com.google.common.collect.RangeSet;
 import com.google.common.collect.TreeRangeSet;
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class Cave {
 
+  private final Set<Point> points;
   private final Map<Sensor, Beacon> sensorToBeaconMap;
 
   public Cave() {
     sensorToBeaconMap = new HashMap<>();
+    points = new HashSet<>();
   }
 
   public void addSensorAndBeacon(String input) {
@@ -31,6 +35,8 @@ public class Cave {
   public void addSensorAndBeacon(int sensorX, int sensorY, int beaconX, int beaconY) {
     Sensor s = new Sensor(sensorX, sensorY);
     Beacon b = new Beacon(beaconX, beaconY);
+    points.add(s);
+    points.add(b);
     sensorToBeaconMap.put(s, b);
   }
 
@@ -46,8 +52,15 @@ public class Cave {
       }
     }
 
+//    System.out.println(xRangeSet);
     for (Range<Integer> r : xRangeSet.asRanges()) {
-      numNoBeacons += r.upperEndpoint() - r.lowerEndpoint();
+      numNoBeacons += r.upperEndpoint() - r.lowerEndpoint() + 1;
+    }
+
+    for (Point p : points) {
+      if (p.getY() == y) {
+        numNoBeacons--;
+      }
     }
 
     return numNoBeacons;
@@ -76,7 +89,7 @@ public class Cave {
 
       if (!foundEnclosingRange) {
         // Find x
-        System.out.println(xRangeSet);
+//        System.out.println(xRangeSet);
         for (Range<Integer> r : xRangeSet.asRanges()) {
           if (r.isConnected(Range.closed(0, 20))) {
             if (r.lowerEndpoint() > min) {
@@ -90,7 +103,7 @@ public class Cave {
         break;
       }
     }
-    System.out.printf("(%d, %d)%n", x, y);
+//    System.out.printf("(%d, %d)%n", x, y);
 
     return new BigInteger(String.valueOf(x)).multiply(new BigInteger(String.valueOf(4000000))).add(new BigInteger(String.valueOf(y)));
   }
