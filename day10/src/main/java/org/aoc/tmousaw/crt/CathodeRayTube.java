@@ -17,6 +17,7 @@ public class CathodeRayTube {
     int registerX = 1;
     int cycles = 0;
     int sumOfSignalStrength = 0;
+    System.out.println("Eight capital letters (Part 2) rendered below:");
     String line;
     while ((line = br.readLine()) != null) {
       if (line.trim().length() > 0) {
