@@ -31,8 +31,9 @@ public class CalorieCounting {
     Collections.sort(calorieList);
     Collections.reverse(calorieList);
 
+    System.out.println("Most calories carried (Part 1): " + calorieList.get(0));
     int sumOfTopThreeCalories = calorieList.get(0) + calorieList.get(1) + calorieList.get(2);
 
-    System.out.println(sumOfTopThreeCalories);
+    System.out.println("Sum of top three calories carried (Part 2): " + sumOfTopThreeCalories);
   }
 }
