@@ -45,6 +45,14 @@ public class Rucksack {
     return contentsSet;
   }
 
+  public Set<Character> getCompartmentOne() {
+    return compartmentOne;
+  }
+
+  public Set<Character> getCompartmentTwo() {
+    return compartmentTwo;
+  }
+
   public static void main(String[] args) throws IOException {
     InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("input.txt");
     assert is != null;
@@ -58,6 +66,15 @@ public class Rucksack {
     }
 
     int prioritySum = 0;
+    for (Rucksack rucksack : rucksackList) {
+      Set<Character> compartmentCopy = new HashSet<>(rucksack.getCompartmentOne());
+      compartmentCopy.retainAll(rucksack.getCompartmentTwo());
+      prioritySum += compartmentCopy.stream().mapToInt(Rucksack::getCharacterPriority).sum();
+    }
+
+    System.out.println("Sum of priority (Part 1): " + prioritySum);
+
+    prioritySum = 0;
     for (int i = 0; i < rucksackList.size() / 3; i++) {
       if (3*i+2 >= rucksackList.size()) {
         System.out.println("WARNING: Number of rucksacks was not divisible by 3. size=" + rucksackList.size());
@@ -72,7 +89,7 @@ public class Rucksack {
       commonSet.retainAll(rucksack.getContents());
       prioritySum += commonSet.stream().mapToInt(Rucksack::getCharacterPriority).sum();
     }
-    System.out.println(prioritySum);
+    System.out.println("Sum of priority (Part 2): " + prioritySum);
   }
 
   public static int getCharacterPriority(Character c) {
