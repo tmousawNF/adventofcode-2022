@@ -1,25 +1,27 @@
 package org.aoc.tmousaw.rps;
 
+import java.util.Set;
+
 public enum HandShape {
-  ROCK(1, 'A', 3, 2),
-  PAPER(2, 'B', 1, 3),
-  SCISSORS(3, 'C', 2, 1);
+  ROCK(1, Set.of('A', 'X'), 3, 2),
+  PAPER(2, Set.of('B', 'Y'), 1, 3),
+  SCISSORS(3, Set.of('C', 'Z'), 2, 1);
 
   final int value;
-  final Character characterEquivalent;
+  final Set<Character> characterEquivalents;
   final int beatsValue;
   final int losesToValue;
 
-  HandShape(int value, Character characterEquivalent, int beatsValue, int losesToValue) {
+  HandShape(int value, Set<Character> characterEquivalents, int beatsValue, int losesToValue) {
     this.value = value;
-    this.characterEquivalent = characterEquivalent;
+    this.characterEquivalents = characterEquivalents;
     this.beatsValue = beatsValue;
     this.losesToValue = losesToValue;
   }
 
   public static HandShape valueOf(Character c) {
     for (HandShape handShape : HandShape.values()) {
-      if (handShape.characterEquivalent.equals(c)) {
+      if (handShape.characterEquivalents.contains(c)) {
         return handShape;
       }
     }
