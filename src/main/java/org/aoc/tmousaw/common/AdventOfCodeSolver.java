@@ -13,6 +13,7 @@ public abstract class AdventOfCodeSolver {
 
   private final List<String> linesOfInput;
   private final List<Answer> answers;
+  private final long startTime; // The time at which all lines were read in.
 
   public AdventOfCodeSolver() throws IOException {
     this("input.txt");
@@ -34,6 +35,8 @@ public abstract class AdventOfCodeSolver {
     while ((line = br.readLine()) != null) {
       linesOfInput.add(line);
     }
+
+    startTime = System.currentTimeMillis();
   }
 
   public List<String> getLinesOfInput() {
@@ -55,6 +58,15 @@ public abstract class AdventOfCodeSolver {
       sb.append(String.format("(Part %d): %s", i + 1, answer.getValue()));
       System.out.println(sb);
     }
+  }
+
+  public void printTimings() {
+    long timeToSubtract = startTime;
+    for (int i = 0; i < answers.size(); i++) {
+      System.out.printf("Time for part %d: %.3f seconds%n", i + 1, (float) (answers.get(i).getTime() - timeToSubtract) / 1000.0);
+      timeToSubtract = answers.get(i).getTime();
+    }
+    System.out.printf("Total time: %.3f seconds%n", (float) (answers.get(answers.size() - 1).getTime() - startTime) / 1000.0);
   }
 
   public void addAnswer(String message, int value) {
