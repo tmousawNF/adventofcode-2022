@@ -66,7 +66,9 @@ public abstract class AdventOfCodeSolver {
       System.out.printf("Time for part %d: %.3f seconds%n", i + 1, (float) (answers.get(i).getTime() - timeToSubtract) / 1000.0);
       timeToSubtract = answers.get(i).getTime();
     }
-    System.out.printf("Total time: %.3f seconds%n", (float) (answers.get(answers.size() - 1).getTime() - startTime) / 1000.0);
+    if (answers.size() > 0) {
+      System.out.printf("Total time: %.3f seconds%n", (float) (answers.get(answers.size() - 1).getTime() - startTime) / 1000.0);
+    }
   }
 
   public void addAnswer(String message, int value) {
