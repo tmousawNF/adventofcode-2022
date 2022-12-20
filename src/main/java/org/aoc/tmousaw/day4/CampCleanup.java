@@ -1,23 +1,28 @@
-package org.aoc.tmousaw.cleanup;
+package org.aoc.tmousaw.day4;
 
-import com.google.common.collect.Range;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import org.aoc.tmousaw.common.AdventOfCodeSolver;
+import com.google.common.collect.Range;
 
-public class CampCleanup {
+public class CampCleanup extends AdventOfCodeSolver {
+
+  public CampCleanup() throws IOException {
+    super();
+  }
+
   public static void main(String[] args) throws IOException {
-    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("input.txt");
-    assert is != null;
-    InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
-    BufferedReader br = new BufferedReader(reader);
+    CampCleanup campCleanup = new CampCleanup();
+    campCleanup.solve();
+    campCleanup.printAnswers();
+    System.out.println();
+    campCleanup.printTimings();
+  }
 
+  @Override
+  public void solve() {
     int completeOverlaps = 0;
     int overlaps = 0;
-    String line;
-    while ((line = br.readLine()) != null) {
+    for (String line : getLinesOfInput()) {
       if (line.trim().length() > 0) {
         String[] ranges = line.split(",");
         if (ranges.length < 2) {
@@ -67,7 +72,7 @@ public class CampCleanup {
       }
     }
 
-    System.out.println("Complete Overlaps (Part 1): " + completeOverlaps);
-    System.out.println("Overlaps (Part2):" + overlaps);
+    addAnswer("Complete Overlaps", completeOverlaps);
+    addAnswer("Overlaps", overlaps);
   }
 }
