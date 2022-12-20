@@ -14,6 +14,10 @@ public class RopeBridge extends AdventOfCodeSolver {
     super();
   }
 
+  public RopeBridge(String resourceFileName) throws IOException {
+    super(resourceFileName);
+  }
+
   public static void main(String[] args) throws IOException {
     RopeBridge ropeBridge = new RopeBridge();
     ropeBridge.solve();
