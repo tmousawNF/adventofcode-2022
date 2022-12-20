@@ -1,29 +1,34 @@
-package org.aoc.tmousaw.ropebridge;
+package org.aoc.tmousaw.day9;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.aoc.tmousaw.common.AdventOfCodeSolver;
+import org.aoc.tmousaw.geometry.Point;
 
-public class RopeBridge {
+public class RopeBridge extends AdventOfCodeSolver {
 
-  public static void main(String[] args) throws IOException {
-    simulate(2, "input.txt");
-    simulate(10, "input.txt");
+  public RopeBridge() throws IOException {
+    super();
   }
 
-  public static void simulate(int numKnots, String fileName) throws IOException {
-    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
-    assert is != null;
-    InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
-    BufferedReader br = new BufferedReader(reader);
+  public static void main(String[] args) throws IOException {
+    RopeBridge ropeBridge = new RopeBridge();
+    ropeBridge.solve();
+    ropeBridge.printAnswers();
+    System.out.println();
+    ropeBridge.printTimings();
+  }
 
-    String line;
+  @Override
+  public void solve() {
+    simulate(2);
+    simulate(10);
+  }
+
+  public void simulate(int numKnots) {
     Set<Point> positions = new HashSet<>();
     List<Point> knotPositions = new ArrayList<>();
     int leftmost = 0, rightmost = 0, upmost = 0, downmost = 0;
@@ -34,7 +39,7 @@ public class RopeBridge {
     Point headPosition = knotPositions.get(0);
     Point tailPosition = knotPositions.get(knotPositions.size() - 1);
     positions.add(new Point(0, 0));
-    while ((line = br.readLine()) != null) {
+    for (String line : getLinesOfInput()) {
       if (line.trim().length() > 0) {
         String input = line.trim();
         String[] tokens = input.split(" ");
@@ -78,7 +83,6 @@ public class RopeBridge {
                     knotPosition.moveDown();
                   }
                 }
-
               } else {
                 // It is the y position that is more than 1 away.
                 if (followingKnotPosition.getY() > knotPosition.getY()) {
@@ -95,9 +99,8 @@ public class RopeBridge {
                     knotPosition.moveLeft();
                   }
                 }
-
               }
-              assert followingKnotPosition.getY() == knotPosition.getY();
+              assert followingKnotPosition.isAdjacent(knotPosition);
             }
           }
 
@@ -120,7 +123,7 @@ public class RopeBridge {
     }
 
     // printPositions(positions, leftmost, rightmost, upmost, downmost);
-    System.out.println("Positions visited (numKnots=" + numKnots + "): " + positions.size());
+    addAnswer("Positions visited", positions.size());
   }
 
   private static void printPositions(Set<Point> positions, int leftmost, int rightmost, int upmost, int downmost) {

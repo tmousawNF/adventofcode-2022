@@ -1,4 +1,4 @@
-package org.aoc.tmousaw.ropebridge;
+package org.aoc.tmousaw.geometry;
 
 import java.util.Objects;
 
@@ -61,25 +61,21 @@ public class Point implements Comparable<Point> {
     return this.y.compareTo(point.y);
   }
 
-
   @Override
-  public boolean equals(Object obj) {
-    if (obj instanceof Point) {
-      Point p = (Point) obj;
-      return p.x.equals(x) && p.y.equals(y);
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    return false;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Point point = (Point) o;
+    return Objects.equals(x, point.x) && Objects.equals(y, point.y);
   }
 
   @Override
-  public final int hashCode() {
-    int prime = 31;
-    int result = 17;
-    result = prime * result + x.hashCode();
-    result = prime * result + y.hashCode();
-
-    return result;
+  public int hashCode() {
+    return Objects.hash(x, y);
   }
 
   @Override
