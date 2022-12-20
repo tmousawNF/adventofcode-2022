@@ -22,8 +22,6 @@ public abstract class AdventOfCodeSolver {
     linesOfInput = new ArrayList<>();
     answers = new ArrayList<>();
 
-    System.out.println(this.getClass().getPackageName());
-
     String packageName = this.getClass().getPackageName();
     InputStream is = Thread.currentThread().getContextClassLoader()
         .getResourceAsStream(packageName.substring(packageName.lastIndexOf(".") + 1) + "/" + resourceFileName);
@@ -40,6 +38,10 @@ public abstract class AdventOfCodeSolver {
 
   public List<String> getLinesOfInput() {
     return linesOfInput;
+  }
+
+  public List<Answer> getAnswers() {
+    return answers;
   }
 
   public void printAnswers() {
