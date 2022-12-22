@@ -75,5 +75,9 @@ public abstract class AdventOfCodeSolver {
     answers.add(new Answer(message, String.valueOf(value)));
   }
 
+  public void addAnswer(String message, long value) {
+    answers.add(new Answer(message, String.valueOf(value)));
+  }
+
   public abstract void solve();
 }
