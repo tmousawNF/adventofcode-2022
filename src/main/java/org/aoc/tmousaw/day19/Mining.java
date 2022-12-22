@@ -14,7 +14,6 @@ public class Mining extends AdventOfCodeSolver {
           + "Each geode robot costs (\\d+) ore and (\\d+) obsidian.");
 
   public Mining() throws IOException {
-    super();
   }
 
   public static void main(String[] args) throws IOException {
