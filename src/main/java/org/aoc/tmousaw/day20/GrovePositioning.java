@@ -8,7 +8,6 @@ import org.aoc.tmousaw.common.AdventOfCodeSolver;
 public class GrovePositioning extends AdventOfCodeSolver {
 
   public GrovePositioning() throws IOException {
-    super();
   }
 
   public GrovePositioning(String resourceFileName) throws IOException {

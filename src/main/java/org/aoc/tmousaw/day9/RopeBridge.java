@@ -11,7 +11,6 @@ import org.aoc.tmousaw.geometry.Point;
 public class RopeBridge extends AdventOfCodeSolver {
 
   public RopeBridge() throws IOException {
-    super();
   }
 
   public RopeBridge(String resourceFileName) throws IOException {

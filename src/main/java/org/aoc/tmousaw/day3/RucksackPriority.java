@@ -10,7 +10,6 @@ import org.aoc.tmousaw.common.AdventOfCodeSolver;
 public class RucksackPriority extends AdventOfCodeSolver {
 
   public RucksackPriority() throws IOException {
-    super();
   }
 
   public static void main(String[] args) throws IOException {

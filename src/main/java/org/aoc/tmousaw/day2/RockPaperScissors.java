@@ -6,7 +6,6 @@ import org.aoc.tmousaw.common.AdventOfCodeSolver;
 public class RockPaperScissors extends AdventOfCodeSolver {
 
   public RockPaperScissors() throws IOException {
-    super();
   }
 
   public static void main(String[] args) throws IOException {

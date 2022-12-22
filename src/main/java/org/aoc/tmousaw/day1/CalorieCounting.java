@@ -9,7 +9,6 @@ import org.aoc.tmousaw.common.AdventOfCodeSolver;
 public class CalorieCounting extends AdventOfCodeSolver {
 
   public CalorieCounting() throws IOException {
-    super();
   }
 
   public static void main(String[] args) throws IOException {

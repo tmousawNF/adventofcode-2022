@@ -7,7 +7,6 @@ import com.google.common.collect.Range;
 public class CampCleanup extends AdventOfCodeSolver {
 
   public CampCleanup() throws IOException {
-    super();
   }
 
   public static void main(String[] args) throws IOException {
