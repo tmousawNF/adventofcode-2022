@@ -11,6 +11,7 @@ public class GrovePositioningTest {
     grovePositioning.solve();
 
     assertEquals("11037", grovePositioning.getAnswers().get(0).getValue());
+    assertEquals("3033720253914", grovePositioning.getAnswers().get(0).getValue());
   }
 
   @Test
