@@ -11,6 +11,7 @@ public class MonkeyMathTest {
     MonkeyMath monkeyMath = new MonkeyMath();
     monkeyMath.solve();
     assertEquals("276156919469632", monkeyMath.getAnswers().get(0).getValue());
+    assertEquals("3441198826073", monkeyMath.getAnswers().get(1).getValue());
   }
 
   @Test

@@ -60,13 +60,6 @@ public class MonkeyMath extends AdventOfCodeSolver {
 
     addAnswer("Monkey named 'root' yells", monkeyList.stream().filter(m -> m.getName().equals("root")).findFirst().orElseThrow().getSupplier().get());
 
-
-    // Just a shot in the dark. Try and set the inverse supplier for anyone who didn't get set.
-//    monkeyList.stream().filter(m -> m.getInverseSupplier() == null).forEach(m -> m.setInverseSupplier());
-    addAnswer("I yell", calculateValueNeeded(monkeyList.stream().filter(m -> m.getName().equals("humn")).findFirst().orElseThrow()));
-  }
-
-  public long calculateValueNeeded(Monkey monkey) {
-    return monkey.getInverseSupplier().get();
+    addAnswer("I yell", monkeyList.stream().filter(m -> m.getName().equals("humn")).findFirst().orElseThrow().getInverseSupplier().get());
   }
 }
