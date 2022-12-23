@@ -15,6 +15,10 @@ public class Point implements Comparable<Point> {
     this.y = y;
   }
 
+  public Point(Point p) {
+    this(p.getX(), p.getY());
+  }
+
   public int getX() {
     return x;
   }
@@ -66,7 +70,7 @@ public class Point implements Comparable<Point> {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null) {
       return false;
     }
     Point point = (Point) o;
