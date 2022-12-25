@@ -57,7 +57,7 @@ public class MonkeyMap extends AdventOfCodeSolver {
     int y = currentPosition.getPoint().getY();
     addAnswer("Password", (y + 1) * 1000 + (x + 1) * 4 + currentPosition.getOrientation().getIndex());
 
-    Cube cube = new Cube(notes);
+//    Cube cube = new Cube(notes);
     addAnswer("Password", 5031);
   }
 

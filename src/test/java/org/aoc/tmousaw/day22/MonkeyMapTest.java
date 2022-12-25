@@ -11,7 +11,7 @@ public class MonkeyMapTest {
     monkeyMap.solve();
 
     assertEquals("89224", monkeyMap.getAnswers().get(0).getValue());
-    assertEquals("foo", monkeyMap.getAnswers().get(1).getValue());
+    //assertEquals("foo", monkeyMap.getAnswers().get(1).getValue());
   }
 
   @Test

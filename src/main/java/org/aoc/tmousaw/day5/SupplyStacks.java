@@ -1,26 +1,30 @@
-package org.aoc.tmousaw.stacks;
+package org.aoc.tmousaw.day5;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Stack;
+import org.aoc.tmousaw.common.AdventOfCodeSolver;
 
-public class SupplyStacks {
+public class SupplyStacks extends AdventOfCodeSolver {
+
+  public SupplyStacks() throws IOException {
+  }
+
 
   public static void main(String[] args) throws IOException {
-    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("input.txt");
-    assert is != null;
-    InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
-    BufferedReader br = new BufferedReader(reader);
+    SupplyStacks supplyStacks = new SupplyStacks();
+    supplyStacks.solve();
+    supplyStacks.printAnswers();
+    System.out.println();
+    supplyStacks.printTimings();
+  }
 
+  @Override
+  public void solve() {
     ArrayList<Stack<Character>> supplyStackList = new ArrayList<>();
     ArrayList<Stack<Character>> supplyStackPartTwoList = new ArrayList<>();
-    String line;
     boolean drawingDone = false;
-    while ((line = br.readLine()) != null) {
+    for (String line : getLinesOfInput()) {
       if (line.trim().length() > 0) {
         if (!drawingDone) {
           int crateIndex = 0;
@@ -69,7 +73,7 @@ public class SupplyStacks {
             intermediateStack.push(fromCrateStackPartTwo.pop());
           }
 
-          while(!intermediateStack.isEmpty()) {
+          while (!intermediateStack.isEmpty()) {
             toCrateStackPartTwo.push(intermediateStack.pop());
           }
         }
@@ -88,16 +92,16 @@ public class SupplyStacks {
       }
     }
 
-    System.out.print("Message (Part 1): ");
+    StringBuilder builder = new StringBuilder();
     for (Stack<Character> characters : supplyStackList) {
-      System.out.print(characters.peek());
+      builder.append(characters.peek());
     }
-    System.out.println();
+    addAnswer("Message", builder.toString());
 
-    System.out.print("Message (Part 2): ");
+    builder.setLength(0);
     for (Stack<Character> characters : supplyStackPartTwoList) {
-      System.out.print(characters.peek());
+      builder.append(characters.peek());
     }
-    System.out.println();
+    addAnswer("Message", builder.toString());
   }
 }
