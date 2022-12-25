@@ -5,10 +5,10 @@ import org.aoc.tmousaw.geometry.Point;
 
 public class Notes extends Grid {
 
-  private Point startingPosition;
+  private Point startingPoint;
 
   public Notes() {
-    startingPosition = null;
+    startingPoint = null;
   }
 
   @Override
@@ -16,8 +16,8 @@ public class Notes extends Grid {
     super.addPoint(p);
 
     // The first point added will always be the starting position.
-    if (startingPosition == null) {
-      startingPosition = p;
+    if (startingPoint == null) {
+      startingPoint = p;
     }
   }
 
@@ -37,7 +37,7 @@ public class Notes extends Grid {
     }
   }
 
-  public Point getStartingPosition() {
-    return startingPosition;
+  public Point getStartingPoint() {
+    return startingPoint;
   }
 }

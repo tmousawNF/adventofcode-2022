@@ -20,6 +20,6 @@ public class MonkeyMapTest {
     monkeyMap.solve();
 
     assertEquals("6032", monkeyMap.getAnswers().get(0).getValue());
-    assertEquals("6032", monkeyMap.getAnswers().get(1).getValue());
+    assertEquals("5031", monkeyMap.getAnswers().get(1).getValue());
   }
 }

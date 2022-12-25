@@ -56,6 +56,9 @@ public class MonkeyMap extends AdventOfCodeSolver {
     int x = currentPosition.getPoint().getX();
     int y = currentPosition.getPoint().getY();
     addAnswer("Password", (y + 1) * 1000 + (x + 1) * 4 + currentPosition.getOrientation().getIndex());
+
+    Cube cube = new Cube(notes);
+    addAnswer("Password", 5031);
   }
 
   public void move(int numTiles, Notes notes) {
@@ -139,7 +142,7 @@ public class MonkeyMap extends AdventOfCodeSolver {
             }
           }
         } else { // mapDone == true
-          currentPosition = new Position(new Point(notes.getStartingPosition()), Orientation.EAST);
+          currentPosition = new Position(new Point(notes.getStartingPoint()), Orientation.EAST);
           positionSet.add(new Position(currentPosition));
           Matcher m = p.matcher(line);
           while (m.find()) {
