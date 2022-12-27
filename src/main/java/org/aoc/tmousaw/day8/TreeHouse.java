@@ -1,70 +1,71 @@
-package org.aoc.tmousaw.treehouse;
+package org.aoc.tmousaw.day8;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import org.aoc.tmousaw.common.AdventOfCodeSolver;
 
-public class TreeHouse {
+public class TreeHouse extends AdventOfCodeSolver {
   private final List<List<Integer>> listOfRows;
   private final List<List<Integer>> listOfColumns;
 
-  public TreeHouse() {
+  public TreeHouse() throws IOException {
     listOfRows = new ArrayList<>();
     listOfColumns = new ArrayList<>();
   }
 
   public static void main(String[] args) throws IOException {
-    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("input.txt");
-    assert is != null;
-    InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
-    BufferedReader br = new BufferedReader(reader);
-
     TreeHouse treeHouse = new TreeHouse();
-    String line;
+    treeHouse.solve();
+    treeHouse.printAnswers();
+    System.out.println();
+    treeHouse.printTimings();
+  }
+
+
+  @Override
+  public void solve() {
+
     boolean listOfColumnsInitialized = false;
-    while ((line = br.readLine()) != null) {
+    for (String line : getLinesOfInput()) {
       if (line.trim().length() > 0) {
         String input = line.trim();
         if (!listOfColumnsInitialized) {
           for (int i = 0; i < input.length(); i++) {
-            treeHouse.listOfColumns.add(new ArrayList<>());
+            listOfColumns.add(new ArrayList<>());
           }
           listOfColumnsInitialized = true;
         }
 
         List<Integer> rowHeights = new ArrayList<>();
-        treeHouse.listOfRows.add(rowHeights);
+        listOfRows.add(rowHeights);
         for (int i = 0; i < input.length(); i++) {
           int height = Integer.parseInt(input.substring(i, i + 1));
           rowHeights.add(height);
-          treeHouse.listOfColumns.get(i).add(height);
+          listOfColumns.get(i).add(height);
         }
       }
     }
 
     int numberOfTreesVisible = 0;
-    int numberOfRows = treeHouse.listOfColumns.size();
-    int numberOfColumns = treeHouse.listOfRows.size();
+    int numberOfRows = listOfColumns.size();
+    int numberOfColumns = listOfRows.size();
     int maxScenicScore = 0;
     for (int row = 0; row < numberOfRows; row++) {
       for (int column = 0; column < numberOfColumns; column++) {
-        if (treeHouse.isVisible(row, column)) {
+        if (isVisible(row, column)) {
           numberOfTreesVisible++;
         }
-        int scenicScore = treeHouse.getScenicScore(row, column);
+        int scenicScore = getScenicScore(row, column);
         if (scenicScore > maxScenicScore) {
           maxScenicScore = scenicScore;
         }
       }
     }
 
-    System.out.println("Number of visible trees (Part 1): " + numberOfTreesVisible);
-    System.out.println("Max scenic score (Part 2): " + maxScenicScore);
+    addAnswer("Number of visible trees", numberOfTreesVisible);
+    addAnswer("Max scenic score", maxScenicScore);
   }
 
   private int getScenicScore(int row, int column) {
