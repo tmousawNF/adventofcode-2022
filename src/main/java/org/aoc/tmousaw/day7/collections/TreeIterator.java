@@ -1,4 +1,4 @@
-package org.aoc.tmousaw.fs.collections;
+package org.aoc.tmousaw.day7.collections;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

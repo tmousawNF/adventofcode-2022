@@ -1,15 +1,11 @@
-package org.aoc.tmousaw.fs;
+package org.aoc.tmousaw.day7;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.NoSuchFileException;
 import java.util.function.Consumer;
-import org.aoc.tmousaw.fs.collections.Tree;
+import org.aoc.tmousaw.common.AdventOfCodeSolver;
+import org.aoc.tmousaw.day7.collections.Tree;
 
-public class NoSpaceLeftOnDevice {
+public class NoSpaceLeftOnDevice extends AdventOfCodeSolver {
 
   public static String CD_CMD = "cd";
   private final Tree<Inode> root;
@@ -17,20 +13,23 @@ public class NoSpaceLeftOnDevice {
   public static long freeSpace = 70000000;
   public static long sizeOfDirectoryToDelete = 70000000;
 
-  public NoSpaceLeftOnDevice() {
+  public NoSpaceLeftOnDevice() throws IOException {
     root = new Tree<>(new Inode("/", 0, true));
   }
 
   public static void main(String[] args) throws IOException {
-    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("input.txt");
-    assert is != null;
-    InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
-    BufferedReader br = new BufferedReader(reader);
+    NoSpaceLeftOnDevice noSpaceLeftOnDevice = new NoSpaceLeftOnDevice();
+    noSpaceLeftOnDevice.solve();
+    noSpaceLeftOnDevice.printAnswers();
+    System.out.println();
+    noSpaceLeftOnDevice.printTimings();
+  }
 
-    NoSpaceLeftOnDevice device = new NoSpaceLeftOnDevice();
-    Tree<Inode> current = device.getRoot();
-    String line;
-    while ((line = br.readLine()) != null) {
+
+  @Override
+  public void solve() {
+    Tree<Inode> current = getRoot();
+    for (String line : getLinesOfInput()) {
       if (line.trim().length() > 0) {
         if (line.trim().startsWith("$")) {
           // Command. Either 'cd' or 'ls'.
@@ -43,15 +42,15 @@ public class NoSpaceLeftOnDevice {
           if (CD_CMD.equals(tokens[0])) {
             if (tokens.length == 1) {
               System.out.println("WARNING: 'cd' command with no directory. Assuming root.");
-              current = device.getRoot();
+              current = getRoot();
             }
 
             String directory = tokens[1];
             if ("/".equals(directory)) {
-              current = device.getRoot();
+              current = getRoot();
             } else if ("..".equals(directory)) {
               if (current.getParent() == null) {
-                throw new NoSuchFileException("Attempted to traverse to parent of root.");
+                throw new RuntimeException("Attempted to traverse to parent of root.");
               }
               current = current.getParent();
             } else {
@@ -100,9 +99,10 @@ public class NoSpaceLeftOnDevice {
         }
       }
     };
-    traverse(device.getRoot(), directoriesAtMost100K);
-    System.out.println("Sum of all directories at most 100K in size (Part 1):" + sumOfDirectoriesAtMost100K);
-    freeSpace -= calculateDirectorySize(device.getRoot());
+    traverse(getRoot(), directoriesAtMost100K);
+    addAnswer("Sum of all directories at most 100K in size", sumOfDirectoriesAtMost100K);
+
+    freeSpace -= calculateDirectorySize(getRoot());
     Consumer<Tree<Inode>> smallestDirectoryToGet30MFreeSpace = inode -> {
       if (inode != null) {
         if (inode.getData().isDirectory()) {
@@ -113,8 +113,8 @@ public class NoSpaceLeftOnDevice {
         }
       }
     };
-    traverse(device.getRoot(), smallestDirectoryToGet30MFreeSpace);
-    System.out.println("Smallest directory to make at least 30M in free space (Part 2):" + sizeOfDirectoryToDelete);
+    traverse(getRoot(), smallestDirectoryToGet30MFreeSpace);
+    addAnswer("Smallest directory to make at least 30M in free space", sizeOfDirectoryToDelete);
   }
 
   public static long calculateDirectorySize(Tree<Inode> directory) {
@@ -136,7 +136,7 @@ public class NoSpaceLeftOnDevice {
     return root;
   }
 
-  public static void traverse(Tree<Inode> inode, Consumer<Tree<Inode>> consumer) {
+  public void traverse(Tree<Inode> inode, Consumer<Tree<Inode>> consumer) {
     consumer.accept(inode);
     if (inode != null) {
       for (Tree<Inode> child : inode.getChildren()) {

@@ -1,4 +1,4 @@
-package org.aoc.tmousaw.fs;
+package org.aoc.tmousaw.day7;
 
 public class Inode {
   // It's not really an inode, but it's a subset of an inode.
