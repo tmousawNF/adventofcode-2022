@@ -1,25 +1,46 @@
-package org.aoc.tmousaw.crt;
+package org.aoc.tmousaw.day10;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import org.aoc.tmousaw.common.AdventOfCodeSolver;
 
-public class CathodeRayTube {
+public class CathodeRayTube extends AdventOfCodeSolver {
+
+  public CathodeRayTube() throws IOException {
+    this("input.txt");
+  }
+
+  public CathodeRayTube(String resourceFileName) throws IOException {
+    super(resourceFileName);
+  }
 
   public static void main(String[] args) throws IOException {
-    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("input.txt");
-    assert is != null;
-    InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
-    BufferedReader br = new BufferedReader(reader);
+    CathodeRayTube cathodeRayTube = new CathodeRayTube();
+    cathodeRayTube.solve();
+    cathodeRayTube.printAnswers();
+    System.out.println();
+    cathodeRayTube.printTimings();
+  }
 
+  public static void processCycle(int cycle, int registerX) {
+    if (Math.abs((cycle % 40) - registerX) <= 1) {
+      System.out.print("#");
+    } else {
+      System.out.print(".");
+    }
+
+    if ((cycle + 1) % 40 == 0) {
+      System.out.println();
+    }
+  }
+
+  @Override
+  public void solve() {
     int registerX = 1;
     int cycles = 0;
     int sumOfSignalStrength = 0;
     System.out.println("Eight capital letters (Part 2) rendered below:");
-    String line;
-    while ((line = br.readLine()) != null) {
+
+    for (String line : getLinesOfInput()) {
       if (line.trim().length() > 0) {
         String input = line.trim();
 
@@ -54,18 +75,6 @@ public class CathodeRayTube {
       }
     }
 
-    System.out.println("Sum of Signals (Part 1): " + sumOfSignalStrength);
-  }
-
-  public static void processCycle(int cycle, int registerX) {
-    if (Math.abs((cycle % 40) - registerX) <= 1) {
-      System.out.print("#");
-    } else {
-      System.out.print(".");
-    }
-
-    if ((cycle + 1) % 40 == 0) {
-      System.out.println();
-    }
+    addAnswer("Sum of Signals", sumOfSignalStrength);
   }
 }
