@@ -23,8 +23,9 @@ public class TreeHouseTest {
 
     ListIterator<Integer> listIterator = intList.listIterator(2);
 
+    int expected = 0;
     while(listIterator.hasPrevious()) {
-      System.out.println(listIterator.previous());
+      assertEquals(expected++, listIterator.previous());
     }
   }
 }

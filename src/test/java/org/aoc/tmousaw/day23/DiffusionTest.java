@@ -2,10 +2,12 @@ package org.aoc.tmousaw.day23;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class DiffusionTest {
   @Test
+  @Disabled("because this test takes a while")
   public void testDiffusion() throws IOException {
     Diffusion diffusion = new Diffusion();
     diffusion.solve();
