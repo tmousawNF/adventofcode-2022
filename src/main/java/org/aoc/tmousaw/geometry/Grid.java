@@ -1,23 +1,22 @@
 package org.aoc.tmousaw.geometry;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.TreeMap;
 
 public class Grid {
 
+  List<Point> points;
+  Map<Point, Point> pointsMap;
   private int maxX;
   private int minX;
   private int maxY;
   private int minY;
 
-  Set<Point> points;
-  Map<Point, Point> pointsMap;
-
   public Grid() {
-    points = new HashSet<>();
-    pointsMap = new HashMap<>();
+    points = new ArrayList<>();
+    pointsMap = new TreeMap<>();
     maxX = Integer.MIN_VALUE;
     minX = Integer.MAX_VALUE;
     maxY = Integer.MIN_VALUE;
@@ -27,7 +26,16 @@ public class Grid {
   public void addPoint(Point point) {
     points.add(point);
     pointsMap.put(point, point);
-    if(point.getX() > maxX) {
+    checkForNewBoundaries(point);
+  }
+
+  public void movePoint(Point point, int dx, int dy) {
+    point.move(dx, dy);
+    checkForNewBoundaries(point);
+  }
+
+  private void checkForNewBoundaries(Point point) {
+    if (point.getX() > maxX) {
       maxX = point.getX();
     }
     if (point.getX() < minX) {
@@ -57,7 +65,7 @@ public class Grid {
     return minY;
   }
 
-  public Set<Point> getPoints() {
+  public List<Point> getPoints() {
     return points;
   }
 
