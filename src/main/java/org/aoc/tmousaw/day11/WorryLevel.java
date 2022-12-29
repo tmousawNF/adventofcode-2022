@@ -1,4 +1,4 @@
-package org.aoc.tmousaw.mitm;
+package org.aoc.tmousaw.day11;
 
 import java.util.function.Function;
 

@@ -1,25 +1,33 @@
-package org.aoc.tmousaw.mitm;
+package org.aoc.tmousaw.day11;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import org.aoc.tmousaw.common.AdventOfCodeSolver;
 
-public class MonkeyInTheMiddle {
+public class MonkeyInTheMiddle extends AdventOfCodeSolver {
 
+  public MonkeyInTheMiddle() throws IOException {
+    this("input.txt");
+  }
+
+  public MonkeyInTheMiddle(String resourceFileName) throws IOException {
+    super(resourceFileName);
+  }
   public static void main(String[] args) throws IOException {
-    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("input.txt");
-    assert is != null;
-    InputStreamReader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
-    BufferedReader br = new BufferedReader(reader);
+    MonkeyInTheMiddle monkeyInTheMiddle = new MonkeyInTheMiddle();
+    monkeyInTheMiddle.solve();
+    monkeyInTheMiddle.printAnswers();
+    System.out.println();
+    monkeyInTheMiddle.printTimings();
+  }
 
+
+  @Override
+  public void solve() {
     List<Monkey> monkeys = new ArrayList<>();
     Monkey currentMonkey = null;
-    String line;
-    while ((line = br.readLine()) != null) {
+    for (String line : getLinesOfInput()) {
       if (line.trim().length() > 0) {
         String input = line.trim();
 
@@ -99,7 +107,7 @@ public class MonkeyInTheMiddle {
       }
     }
 
-    System.out.println("Level of Monkey Business after 20 rounds (Part 1): " + largestValue * secondLargestValue);
+    addAnswer("Level of Monkey Business after 20 rounds", largestValue * secondLargestValue);
 
     // Part 2.
     for (int i = 0; i < 10000; i++) {
@@ -116,7 +124,7 @@ public class MonkeyInTheMiddle {
       }
     }
 
-    System.out.println("Level of Monkey Business after 10000 rounds (Part 2): " + largestValue * secondLargestValue);
+    addAnswer("Level of Monkey Business after 10000 rounds", largestValue * secondLargestValue);
   }
 
   private static void performRound(List<Monkey> monkeys) {
