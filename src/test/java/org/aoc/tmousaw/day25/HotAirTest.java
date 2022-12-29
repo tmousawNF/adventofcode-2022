@@ -10,7 +10,7 @@ public class HotAirTest {
     HotAir hotAir = new HotAir();
     hotAir.solve();
 
-    assertEquals("", hotAir.getAnswers().get(0).getValue());
+    assertEquals("2-2--02=1---1200=0-1", hotAir.getAnswers().get(0).getValue());
   }
 
   @Test
