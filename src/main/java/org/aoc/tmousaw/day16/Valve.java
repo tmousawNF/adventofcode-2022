@@ -17,12 +17,22 @@ public class Valve {
     this.state = State.CLOSED;
   }
 
+  public Valve(Valve valve) {
+    label = valve.label;
+    flowRate = valve.flowRate;
+    state = valve.state;
+  }
+
   public void open() {
     this.state = State.OPEN;
   }
 
   public int getFlowRate() {
     return flowRate;
+  }
+
+  public boolean isOpen() {
+    return State.OPEN.equals(state);
   }
 
   @Override
@@ -49,6 +59,6 @@ public class Valve {
 
   @Override
   public String toString() {
-    return String.format("Valve(%s, %d)", label, flowRate);
+    return String.format("Valve(%s, %d, %s)", label, flowRate, state);
   }
 }

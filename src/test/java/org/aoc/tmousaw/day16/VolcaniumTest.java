@@ -13,15 +13,15 @@ public class VolcaniumTest {
     Volcanium volcanium = new Volcanium();
     volcanium.solve();
 
-    assertEquals("", volcanium.getAnswers().get(0).getValue());
+    assertEquals("1737", volcanium.getAnswers().get(0).getValue());
   }
 
   @Test
-  @Disabled("not finished yet")
   void testVolcaniumSample() throws IOException {
     Volcanium volcanium = new Volcanium("sample.txt");
     volcanium.solve();
 
     assertEquals("1651", volcanium.getAnswers().get(0).getValue());
+//    assertEquals("1707", volcanium.getAnswers().get(1).getValue());
   }
 }

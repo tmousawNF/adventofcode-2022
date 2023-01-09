@@ -60,6 +60,14 @@ public class Graph<T> {
     return vertexToAdjacencyListMap.get(v);
   }
 
+  public List<T> getAllData() {
+    List<T> allData = new ArrayList<>();
+
+    vertexToAdjacencyListMap.keySet().forEach(k -> allData.add(k.getData()));
+
+    return allData;
+  }
+
   public Map<Vertex<T>, Integer> dijkstra(Vertex<T> src) {
     Map<Vertex<T>, Integer> shortestPaths = new HashMap<>();
     Queue<Vertex<T>> queue = new LinkedList<>();

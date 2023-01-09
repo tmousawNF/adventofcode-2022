@@ -1,8 +1,12 @@
 package org.aoc.tmousaw.day16;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -13,15 +17,19 @@ import org.aoc.tmousaw.graph.Vertex;
 
 public class Volcanium extends AdventOfCodeSolver {
 
+  private static final Pattern p = Pattern.compile("^Valve (\\p{Upper}+).*?rate=(\\d+).*?valves? (.*)$");
+  private final Graph<Valve> graph;
+  private final Map<String, Valve> labelToValveMap;
+
   public Volcanium() throws IOException {
     this("input.txt");
   }
 
   public Volcanium(String resourceFileName) throws IOException {
     super(resourceFileName);
+    graph = new Graph<>();
+    labelToValveMap = new HashMap<>();
   }
-
-  private static final Pattern p = Pattern.compile("^Valve (\\p{Upper}+).*?rate=(\\d+).*?valves? (.*)$");
 
   public static void main(String[] args) throws IOException {
     Volcanium volcanium = new Volcanium();
@@ -33,9 +41,6 @@ public class Volcanium extends AdventOfCodeSolver {
 
   @Override
   public void solve() {
-    Graph<Valve> graph = new Graph<>();
-    Map<String, Valve> labelToValveMap = new HashMap<>();
-
     for (String line : getLinesOfInput()) {
       if (line.trim().length() > 0) {
         Matcher m = p.matcher(line.trim());
@@ -64,47 +69,67 @@ public class Volcanium extends AdventOfCodeSolver {
       }
     }
 
-    System.out.println(graph);
-    Map<Vertex<Valve>, Integer> vertexIntegerMap = graph.dijkstra(graph.getVertex(labelToValveMap.get("AA")));
-    System.out.println(vertexIntegerMap);
-
-    Map<Info, Integer> cacheIntegerMap = new HashMap<>();
-    Set<Valve> openedValves = new HashSet<>();
-    Set<Vertex<Valve>> visitedValves = new HashSet<>();
-    int optimizePressureRelease = findOptimalPathToReleasePressure(graph, graph.getVertex(labelToValveMap.get("AA")), 30, cacheIntegerMap, openedValves, 0,
-        visitedValves);
-    System.out.println(optimizePressureRelease);
+    addAnswer("Pressure released", calculateMaxPressure(0));
+//    addAnswer("Pressure released", calculateMaxPressure(1));
   }
 
-  private static int findOptimalPathToReleasePressure(Graph<Valve> graph, Vertex<Valve> current, int numMins, Map<Info, Integer> cacheIntegerMap,
-      Set<Valve> openedValves, int currentReleaseRate, Set<Vertex<Valve>> visitedValves) {
-    if (numMins == 0) {
-      return 0;
-    }
+  private int calculateMaxPressure(int helpers) {
+    final Deque<State> queue = new ArrayDeque<>();
+    final Set<State> cache = new HashSet<>();
+    int max = 0;
 
-    visitedValves.add(current);
-    Info info = new Info(current, openedValves, currentReleaseRate);
-    if (cacheIntegerMap.containsKey(info)) {
-      return cacheIntegerMap.get(info);
-    }
+    int minutesRemaining = (helpers > 0) ? 26 : 30;
+    queue.push(new State(graph.getVertex(labelToValveMap.get("AA")), minutesRemaining, graph.getAllData(), 0, helpers));
+    while (!queue.isEmpty()) {
+      State s = queue.removeLast();
 
-    int released = 0;
-    if (!openedValves.contains(current.getData()) && current.getData().getFlowRate() > 0) {
-      Set<Valve> newOpenedValves = new HashSet<>(openedValves);
-      newOpenedValves.add(current.getData());
-      released = findOptimalPathToReleasePressure(graph, current, numMins - 1, cacheIntegerMap, newOpenedValves,
-          currentReleaseRate += current.getData().getFlowRate(), visitedValves);
-    }
+      if (cache.contains(s)) {
+        // Already processed.
+        continue;
+      }
 
-    for (Vertex<Valve> v : graph.getAdjacencyList(current)) {
-      if (!visitedValves.contains(v)) {
-        int tmpReleased = findOptimalPathToReleasePressure(graph, v, numMins - 1, cacheIntegerMap, openedValves, currentReleaseRate, visitedValves);
-        released = Math.max(released, tmpReleased);
+      cache.add(s);
+
+      // If there are no more valves that are closed, stop iterating.
+      if (s.getValves().stream().filter(v -> !v.isOpen()).findAny().isEmpty() || s.getMinutesRemaining() == 0) {
+        max = Math.max(max, s.getReleasedPressure());
+        continue;
+      }
+
+//      if (s.getMinutesRemaining() == 0) {
+//        if (s.getHelpers() > 0) {
+//          queue.push(new State(graph.getVertex(labelToValveMap.get("AA")), minutesRemaining, s.getValves(), s.getReleasedPressure(), s.getHelpers() - 1));
+//        } else {
+//          max = Math.max(max, s.getReleasedPressure());
+//          continue;
+//        }
+//      }
+
+      Vertex<Valve> vertex = s.getCurrentValve();
+      List<Valve> valves = copyValves(s.getValves());
+      Valve current = valves.stream().filter(v -> v.equals(vertex.getData())).findFirst().orElseThrow();
+      if (current.getFlowRate() > 0 && !current.isOpen()) {
+        int releasedPressure = s.getReleasedPressure();
+        valves.stream().filter(v -> v.equals(current)).forEach(Valve::open);
+        queue.add(new State(vertex, s.getMinutesRemaining() - 1, valves, releasedPressure + (s.getMinutesRemaining() - 1) * current.getFlowRate(), helpers));
+      }
+
+      for (Vertex<Valve> v : graph.getAdjacencyList(vertex)) {
+        valves = copyValves(s.getValves());
+        queue.add(new State(v, s.getMinutesRemaining() - 1, valves, s.getReleasedPressure(), helpers));
       }
     }
 
-    released += currentReleaseRate;
-    cacheIntegerMap.put(new Info(current, openedValves, currentReleaseRate), released);
-    return released;
+    return max;
+  }
+
+  private List<Valve> copyValves(List<Valve> valves) {
+    List<Valve> copy = new ArrayList<>();
+
+    for (Valve v : valves) {
+      copy.add(new Valve(v));
+    }
+
+    return copy;
   }
 }

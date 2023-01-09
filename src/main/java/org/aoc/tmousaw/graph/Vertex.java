@@ -8,6 +8,7 @@ public class Vertex<T> {
   public Vertex(T data) {
     this.data = data;
   }
+
   public T getData() {
     return data;
   }
