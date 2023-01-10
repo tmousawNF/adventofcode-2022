@@ -81,17 +81,16 @@ public class Volcanium extends AdventOfCodeSolver {
     final Set<State> cache = new HashSet<>();
     int max = 0;
 
-    int iterations = 0;
+//    int iterations = 0;
     int minutesRemaining = (helpers > 0) ? 26 : 30;
-//    queue.push(new State(graph.getVertex(labelToValveMap.get("AA")), minutesRemaining, copyValves(graph.getAllData().stream().filter(v -> v.getFlowRate() > 0).collect(
-//        Collectors.toList())), 0, helpers));
-    queue.push(new State(graph.getVertex(labelToValveMap.get("AA")), minutesRemaining, copyValves(graph.getAllData()), 0, helpers));
+    queue.push(new State(graph.getVertex(labelToValveMap.get("AA")), minutesRemaining,
+        copyValves(graph.getAllData().stream().filter(v -> v.getFlowRate() > 0).collect(Collectors.toList())), 0, helpers));
     while (!queue.isEmpty()) {
       State s = queue.removeLast();
 
-      if (iterations++ % 100000 == 0) {
-        System.out.println(s);
-      }
+//      if (iterations++ % 100000 == 0) {
+//        System.out.println(s);
+//      }
 
       if (cache.contains(s)) {
         // Already processed.
@@ -101,7 +100,7 @@ public class Volcanium extends AdventOfCodeSolver {
       cache.add(s);
 
       // If there are no more valves that are closed, stop iterating.
-      if (s.getValves().stream().filter(v -> !v.isOpen()).findAny().isEmpty()) {
+      if (s.getValves().stream().filter(Valve::isClosed).findAny().isEmpty()) {
         max = Math.max(max, s.getReleasedPressure());
         continue;
       }
@@ -134,17 +133,17 @@ public class Volcanium extends AdventOfCodeSolver {
 
       Vertex<Valve> vertex = s.getCurrentValve();
       List<Valve> valves = copyValves(s.getValves());
-      Valve current = valves.stream().filter(v -> v.getLabel().equals(vertex.getData().getLabel())).findFirst().orElseThrow();
-      if (current.getFlowRate() > 0 && !current.isOpen()) {
+      Valve current = valves.stream().filter(v -> v.getLabel().equals(vertex.getData().getLabel())).findFirst().orElse(null);
+      if (current != null && current.isClosed()) {
         int releasedPressure = s.getReleasedPressure();
         valves.stream().filter(v -> v.getLabel().equals(current.getLabel())).forEach(Valve::open);
         queue.add(
-            new State(vertex, s.getMinutesRemaining() - 1, copyValves(valves), releasedPressure + (s.getMinutesRemaining() - 1) * current.getFlowRate(), s.getHelpers()));
+            new State(vertex, s.getMinutesRemaining() - 1, valves, releasedPressure + (s.getMinutesRemaining() - 1) * current.getFlowRate(), s.getHelpers()));
       }
 
       for (Vertex<Valve> v : graph.getAdjacencyList(vertex)) {
         valves = copyValves(s.getValves());
-        queue.add(new State(v, s.getMinutesRemaining() - 1, copyValves(valves), s.getReleasedPressure(), s.getHelpers()));
+        queue.add(new State(v, s.getMinutesRemaining() - 1, valves, s.getReleasedPressure(), s.getHelpers()));
       }
     }
 
@@ -152,13 +151,36 @@ public class Volcanium extends AdventOfCodeSolver {
   }
 
   private int maxPressureThatCanBeReleased(State state) {
-    List<Valve> closedValves = state.getValves().stream().filter(v -> v.getFlowRate() > 0).filter(v -> !v.isOpen()).sorted().collect(Collectors.toList());
+    List<Valve> closedValves = state.getValves().stream().filter(Valve::isClosed).sorted().collect(Collectors.toList());
 
+    int helperMinutesRemaining = 25;
     int minutesRemaining = state.getMinutesRemaining() - 1;
     int pressureThatCanBeReleased = state.getReleasedPressure();
-    for (Valve valve : closedValves) {
-      pressureThatCanBeReleased += minutesRemaining-- * valve.getFlowRate();
-      minutesRemaining--; // Because it will take at least a minute to go to the next valve.
+
+    int i = 0;
+    if (state.getHelpers() > 0) {
+      while (i < closedValves.size() && helperMinutesRemaining > minutesRemaining) {
+        for (int j = 0; j < state.getHelpers(); j++) {
+          pressureThatCanBeReleased += helperMinutesRemaining * closedValves.get(i).getFlowRate();
+        }
+        helperMinutesRemaining--;
+        i++;
+      }
+    }
+
+    // At this point, either we have processed all valves or helperMinutesRemaining equals minutesRemaining.
+    while (i < closedValves.size()) {
+      pressureThatCanBeReleased += minutesRemaining * closedValves.get(i).getFlowRate();
+      for (int j = 0; j < state.getHelpers(); j++) {
+        i++;
+        if (i < closedValves.size()) {
+          pressureThatCanBeReleased += minutesRemaining * closedValves.get(i).getFlowRate();
+        } else {
+          break;
+        }
+      }
+      minutesRemaining--;
+      i++;
     }
 
     return pressureThatCanBeReleased;

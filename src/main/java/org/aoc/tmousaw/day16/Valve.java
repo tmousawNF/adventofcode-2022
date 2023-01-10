@@ -37,6 +37,10 @@ public class Valve implements Comparable<Valve> {
     return State.OPEN.equals(state);
   }
 
+  public boolean isClosed() {
+    return State.CLOSED.equals(state);
+  }
+
   public String getLabel() {
     return label;
   }
