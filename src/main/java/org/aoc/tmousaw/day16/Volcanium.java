@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.aoc.tmousaw.common.AdventOfCodeSolver;
 import org.aoc.tmousaw.graph.Graph;
 import org.aoc.tmousaw.graph.Vertex;
@@ -69,8 +70,10 @@ public class Volcanium extends AdventOfCodeSolver {
       }
     }
 
+    System.out.println("Starting Part 1");
     addAnswer("Pressure released", calculateMaxPressure(0));
-//    addAnswer("Pressure released", calculateMaxPressure(1));
+    System.out.println("Starting Part 2");
+    addAnswer("Pressure released", calculateMaxPressure(1));
   }
 
   private int calculateMaxPressure(int helpers) {
@@ -78,10 +81,17 @@ public class Volcanium extends AdventOfCodeSolver {
     final Set<State> cache = new HashSet<>();
     int max = 0;
 
+    int iterations = 0;
     int minutesRemaining = (helpers > 0) ? 26 : 30;
-    queue.push(new State(graph.getVertex(labelToValveMap.get("AA")), minutesRemaining, graph.getAllData(), 0, helpers));
+//    queue.push(new State(graph.getVertex(labelToValveMap.get("AA")), minutesRemaining, copyValves(graph.getAllData().stream().filter(v -> v.getFlowRate() > 0).collect(
+//        Collectors.toList())), 0, helpers));
+    queue.push(new State(graph.getVertex(labelToValveMap.get("AA")), minutesRemaining, copyValves(graph.getAllData()), 0, helpers));
     while (!queue.isEmpty()) {
       State s = queue.removeLast();
+
+      if (iterations++ % 100000 == 0) {
+        System.out.println(s);
+      }
 
       if (cache.contains(s)) {
         // Already processed.
@@ -91,36 +101,67 @@ public class Volcanium extends AdventOfCodeSolver {
       cache.add(s);
 
       // If there are no more valves that are closed, stop iterating.
-      if (s.getValves().stream().filter(v -> !v.isOpen()).findAny().isEmpty() || s.getMinutesRemaining() == 0) {
+      if (s.getValves().stream().filter(v -> !v.isOpen()).findAny().isEmpty()) {
         max = Math.max(max, s.getReleasedPressure());
         continue;
       }
 
-//      if (s.getMinutesRemaining() == 0) {
-//        if (s.getHelpers() > 0) {
-//          queue.push(new State(graph.getVertex(labelToValveMap.get("AA")), minutesRemaining, s.getValves(), s.getReleasedPressure(), s.getHelpers() - 1));
-//        } else {
-//          max = Math.max(max, s.getReleasedPressure());
-//          continue;
-//        }
+      if (s.getMinutesRemaining() == 0) {
+        if (s.getHelpers() > 0) {
+          queue.push(
+              new State(graph.getVertex(labelToValveMap.get("AA")), minutesRemaining, copyValves(s.getValves()), s.getReleasedPressure(), s.getHelpers() - 1));
+        } else {
+          max = Math.max(max, s.getReleasedPressure());
+        }
+        continue;
+      }
+
+      // Here I was trying to filter out any state where the same set of valves are open at the same time but has a lower released pressure. But it doesn't work.
+//      if (cache.stream()
+//          .filter(c -> c.getValves().containsAll(s.getValves()))
+//          .filter(c -> c.getMinutesRemaining() == s.getMinutesRemaining())
+//          .filter(c -> c.getHelpers() == s.getHelpers())
+//          .filter(c -> c.getCurrentValve().equals(s.getCurrentValve()))
+//          .filter(c -> c.getReleasedPressure() > s.getReleasedPressure()).findAny().isPresent()) {
+//        // There is already the same situation with more released pressure, so this path can be terminated.
+//        System.out.println("Skipping " + s);
+//        continue;
 //      }
+
+      if (maxPressureThatCanBeReleased(s) < max) {
+        continue;
+      }
 
       Vertex<Valve> vertex = s.getCurrentValve();
       List<Valve> valves = copyValves(s.getValves());
-      Valve current = valves.stream().filter(v -> v.equals(vertex.getData())).findFirst().orElseThrow();
+      Valve current = valves.stream().filter(v -> v.getLabel().equals(vertex.getData().getLabel())).findFirst().orElseThrow();
       if (current.getFlowRate() > 0 && !current.isOpen()) {
         int releasedPressure = s.getReleasedPressure();
-        valves.stream().filter(v -> v.equals(current)).forEach(Valve::open);
-        queue.add(new State(vertex, s.getMinutesRemaining() - 1, valves, releasedPressure + (s.getMinutesRemaining() - 1) * current.getFlowRate(), helpers));
+        valves.stream().filter(v -> v.getLabel().equals(current.getLabel())).forEach(Valve::open);
+        queue.add(
+            new State(vertex, s.getMinutesRemaining() - 1, copyValves(valves), releasedPressure + (s.getMinutesRemaining() - 1) * current.getFlowRate(), s.getHelpers()));
       }
 
       for (Vertex<Valve> v : graph.getAdjacencyList(vertex)) {
         valves = copyValves(s.getValves());
-        queue.add(new State(v, s.getMinutesRemaining() - 1, valves, s.getReleasedPressure(), helpers));
+        queue.add(new State(v, s.getMinutesRemaining() - 1, copyValves(valves), s.getReleasedPressure(), s.getHelpers()));
       }
     }
 
     return max;
+  }
+
+  private int maxPressureThatCanBeReleased(State state) {
+    List<Valve> closedValves = state.getValves().stream().filter(v -> v.getFlowRate() > 0).filter(v -> !v.isOpen()).sorted().collect(Collectors.toList());
+
+    int minutesRemaining = state.getMinutesRemaining() - 1;
+    int pressureThatCanBeReleased = state.getReleasedPressure();
+    for (Valve valve : closedValves) {
+      pressureThatCanBeReleased += minutesRemaining-- * valve.getFlowRate();
+      minutesRemaining--; // Because it will take at least a minute to go to the next valve.
+    }
+
+    return pressureThatCanBeReleased;
   }
 
   private List<Valve> copyValves(List<Valve> valves) {

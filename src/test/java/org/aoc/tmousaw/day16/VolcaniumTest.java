@@ -14,6 +14,7 @@ public class VolcaniumTest {
     volcanium.solve();
 
     assertEquals("1737", volcanium.getAnswers().get(0).getValue());
+    assertEquals("1737", volcanium.getAnswers().get(1).getValue());
   }
 
   @Test
@@ -22,6 +23,6 @@ public class VolcaniumTest {
     volcanium.solve();
 
     assertEquals("1651", volcanium.getAnswers().get(0).getValue());
-//    assertEquals("1707", volcanium.getAnswers().get(1).getValue());
+    assertEquals("1707", volcanium.getAnswers().get(1).getValue());
   }
 }

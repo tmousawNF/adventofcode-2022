@@ -9,8 +9,8 @@ public class State {
   private final Vertex<Valve> currentValve;
   private final int minutesRemaining;
   private final List<Valve> valves;
-  private int releasedPressure;
-  private int helpers;
+  private final int releasedPressure;
+  private final int helpers;
 
   public State(Vertex<Valve> currentValve, int minutesRemaining, List<Valve> valves, int releasedPressure, int helpers) {
     this.currentValve = currentValve;
@@ -40,6 +40,7 @@ public class State {
     return helpers;
   }
 
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -49,13 +50,13 @@ public class State {
       return false;
     }
     State state = (State) o;
-    return minutesRemaining == state.minutesRemaining && releasedPressure == state.releasedPressure && Objects.equals(currentValve, state.currentValve)
-        && Objects.equals(valves, state.valves);
+    return minutesRemaining == state.minutesRemaining && releasedPressure == state.releasedPressure && helpers == state.helpers && Objects.equals(
+        currentValve, state.currentValve) && Objects.equals(valves, state.valves);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(currentValve, minutesRemaining, valves, releasedPressure);
+    return Objects.hash(currentValve, minutesRemaining, valves, releasedPressure, helpers);
   }
 
   @Override

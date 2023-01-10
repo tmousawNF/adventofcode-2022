@@ -1,6 +1,8 @@
 package org.aoc.tmousaw.day16;
 
-public class Valve {
+import java.util.Objects;
+
+public class Valve implements Comparable<Valve> {
 
   private enum State {
     CLOSED,
@@ -35,6 +37,10 @@ public class Valve {
     return State.OPEN.equals(state);
   }
 
+  public String getLabel() {
+    return label;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -44,21 +50,22 @@ public class Valve {
       return false;
     }
     Valve valve = (Valve) o;
-    return valve.label.equals(label) && valve.flowRate.equals(flowRate);
+    return Objects.equals(label, valve.label) && Objects.equals(flowRate, valve.flowRate) && state == valve.state;
   }
 
   @Override
-  public final int hashCode() {
-    int prime = 31;
-    int result = 17;
-    result = prime * result + label.hashCode();
-    result = prime * result + flowRate.hashCode();
-
-    return result;
+  public int hashCode() {
+    return Objects.hash(label, flowRate, state);
   }
 
   @Override
   public String toString() {
     return String.format("Valve(%s, %d, %s)", label, flowRate, state);
+  }
+
+
+  @Override
+  public int compareTo(Valve valve) {
+    return valve.flowRate - flowRate;
   }
 }
